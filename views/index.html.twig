@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cosmo/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <title>#suitup</title>
+</head>
+
+<body>
+    <div class="container" style="margin-top:20px">
+        <form class="form">
+            <div class="form-group">
+                <input type="text" class="filter form-control" placeholder="Search..">
+            </div>
+        </form>
+
+        <table class="table table-bordered table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-7">URL</th>
+                    <th class="col-md-2">Nick</th>
+                    <th class="col-md-2">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td>{{ link.id }}</td>
+                        <td><a href="{{ link.url }}">{{ link.url }}</a></td>
+                        <td>{{ link.nick }}</td>
+                        <td>{{ link.time|date("Y-m-d H:i") }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script>
+        $(function() {
+            $(".filter").focus();
+        });
+
+        var rows = $("tbody tr");
+        $(".filter").keyup(function() {
+            var val = $.trim($(this).val()).replace(/ +/g, " ").toLowerCase();
+            
+            rows.show().filter(function() {
+                var text = $(this).text().replace(/\s+/g, " ").toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+    </script>
+</body>
+
+</html>
