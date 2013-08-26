@@ -39,14 +39,19 @@ $app["password"] = function() {
 $app["security.firewalls"] = array(
     "unsecured" => array(
         "pattern" => "^/submit",
+        "anonymous" => true
     ),
     "secured" => array(
         "pattern" => "^/",
         "http" => true,
         "users" => array(
             "user" => array("ROLE_USER", $app["password"]),
-        ),
-    ),
+        )
+    )
+);
+
+$app['security.access_rules'] = array(
+    array("^.*$", "IS_AUTHENTICATED_ANONYMOUSLY", "https")
 );
 
 $app->get("/", function() use($app) {
