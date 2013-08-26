@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cosmo/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-    <title>#suitup</title>
+    <title>IRC Link aggregator</title>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
                 <tr>
                     <th class="col-md-1">#</th>
                     <th class="col-md-7">URL</th>
-                    <th class="col-md-2">Nick</th>
+                    {# <th class="col-md-2">Nick</th> #}
                     <th class="col-md-2">Date</th>
                 </tr>
             </thead>
@@ -30,7 +30,7 @@
                     <tr>
                         <td>{{ link.id }}</td>
                         <td><a href="{{ link.url }}">{{ link.url }}</a></td>
-                        <td>{{ link.nick }}</td>
+                        {# <td>{{ link.nick }}</td> #}
                         <td>{{ link.time|date("Y-m-d H:i") }}</td>
                     </tr>
                 {% endfor %}
