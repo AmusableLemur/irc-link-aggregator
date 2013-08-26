@@ -64,13 +64,6 @@ $app->get("/", function() use($app) {
     ));
 });
 
-$app->get("/login", function() use($app) {
-    return $app["twig"]->render("login.html.twig", array(
-        "error" => $app["security.last_error"]($request),
-        "last_username" => $app["session"]->get("_security.last_username")
-    ));
-});
-
 $app->post("/submit", function(Request $request) use($app) {
     if ($request->get("key") == "CHANGE_ME") {
         $query = $app["db"]->prepare(
