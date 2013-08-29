@@ -6,19 +6,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 
-$app = new Silex\Application(array(
-    "debug" => true
-));
+$app = new Silex\Application();
+
+try {
+    $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config.json"));
+} catch (InvalidArgumentException $e) {
+    die("Configuration file is invalid.");
+}
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
-    "db.options" => array (
-        "driver"    => "pdo_mysql",
-        "host"      => "localhost",
-        "dbname"    => "suitup",
-        "user"      => "root",
-        "password"  => "",
-        "charset"   => "utf8"
-    )
+    "db.options" => $app["database"]
 ));
 
 $app->register(new Silex\Provider\SecurityServiceProvider());
@@ -27,9 +24,9 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     "twig.path" => __DIR__."/../views",
 ));
 
-$app["password"] = function() {
+$app["password"] = function() use($app) {
     $encoder = new MessageDigestPasswordEncoder();
-    $password = "CHANGE_ME";
+    $password = $app["secret"];
     $password = md5($password.date("Y-m-d"));
     $password = substr($password, 0, 12);
 
@@ -50,9 +47,11 @@ $app["security.firewalls"] = array(
     )
 );
 
-$app['security.access_rules'] = array(
-    array("^.*$", "IS_AUTHENTICATED_ANONYMOUSLY", "https")
-);
+if ($app["force_https"]) {
+    $app['security.access_rules'] = array(
+        array("^.*$", "IS_AUTHENTICATED_ANONYMOUSLY", "https")
+    );
+}
 
 $app->get("/", function() use($app) {
     $query = $app["db"]->prepare("SELECT * FROM links ORDER BY id DESC");
@@ -65,7 +64,7 @@ $app->get("/", function() use($app) {
 });
 
 $app->post("/submit", function(Request $request) use($app) {
-    if ($request->get("key") == "CHANGE_ME") {
+    if ($request->get("key") == $app["secret"]) {
         $query = $app["db"]->prepare(
             "INSERT INTO links (
                 url,
