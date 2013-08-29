@@ -1,0 +1,15 @@
+{
+    "database": {
+        "driver": "pdo_mysql",
+        "host": "localhost",
+        "dbname": "links",
+        "user": "root",
+        "password": "",
+        "charset": "utf8"
+    },
+    "debug": false,
+    "force_https": false,
+    "hide_nicks": false,
+    "secret": "CHANGE_ME",
+    "title": "IRC Link Aggregator"
+}
