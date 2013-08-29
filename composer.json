@@ -1,6 +1,7 @@
 {
     "require": {
         "doctrine/dbal": "2.2.*",
+        "igorw/config-service-provider": "v1.2.1",
         "silex/silex": "1.*",
         "symfony/security": "~2.3",
         "twig/twig": ">=1.8,<2.0-dev"
