@@ -81,9 +81,11 @@ $app->post("/submit", function(Request $request) use($app) {
         $query->bindValue("nick", $request->get("nick"));
         $query->bindValue("time", time());
         $query->execute();
+
+        return new Response("Saved!", 201);
     }
 
-    return "Saved!";
+    return new Response("Unauthorized", 401);
 });
 
 $app->run();
