@@ -31,7 +31,14 @@
                 {% for link in links %}
                     <tr>
                         <td>{{ link.id }}</td>
-                        <td><a href="{{ link.url }}">{{ link.url }}</a></td>
+                        <td>
+                            {% if link.meta.title is defined %}
+                                <a href="{{ link.url }}">{{ link.meta.title }}</a>
+                                <small class="text-muted">({{ link.url }})</small>
+                            {% else %}
+                                <a href="{{ link.url }}">{{ link.url }}</a>
+                            {% endif %}
+                        </td>
                         {% if not app.hide_nicks %}
                             <td>{{ link.nick }}</td>
                         {% endif %}

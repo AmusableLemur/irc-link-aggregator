@@ -24,6 +24,13 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     "twig.path" => __DIR__."/../views",
 ));
 
+$app["embedly"] = $app->share(function() use($app) {
+    return new Embedly\Embedly(array(
+        "user_agent" => "Mozilla/5.0 (compatible; irc-link-aggregator/1.0)",
+        "key" => $app["embedly_key"]
+    ));
+});
+
 $app["password"] = function() use($app) {
     $encoder = new MessageDigestPasswordEncoder();
     $password = $app["secret"];
@@ -48,7 +55,7 @@ $app["security.firewalls"] = array(
 );
 
 if ($app["force_https"]) {
-    $app['security.access_rules'] = array(
+    $app["security.access_rules"] = array(
         array("^.*$", "IS_AUTHENTICATED_ANONYMOUSLY", "https")
     );
 }
@@ -58,28 +65,38 @@ $app->get("/", function() use($app) {
 
     $query->execute();
 
+    $links = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    array_walk($links, function(&$link) use($app) {
+        $link["meta"] = unserialize($link["meta"]);
+    });
+
     return $app["twig"]->render("index.html.twig", array(
-        "links" => $query->fetchAll(PDO::FETCH_ASSOC)
+        "links" => $links
     ));
 });
 
 $app->post("/submit", function(Request $request) use($app) {
     if ($request->get("key") == $app["secret"]) {
+        $meta = $app["embedly"]->oembed($request->get("url"));
         $query = $app["db"]->prepare(
             "INSERT INTO links (
                 url,
                 nick,
-                time
+                time,
+                meta
             ) VALUES (
                 :url,
                 :nick,
-                :time
+                :time,
+                :meta
             )"
         );
 
         $query->bindValue("url", $request->get("url"));
         $query->bindValue("nick", $request->get("nick"));
         $query->bindValue("time", time());
+        $query->bindValue("meta", serialize($meta));
         $query->execute();
 
         return new Response("Saved!", 201);
