@@ -80,7 +80,12 @@ $app->get("/", function() use($app) {
 
 $app->post("/submit", function(Request $request) use($app) {
     if ($request->get("key") == $app["secret"]) {
-        $meta = $app["embedly"]->oembed($request->get("url"));
+        $meta = array();
+
+        if (isset($app["embedly_key"]) && $app["embedly_key"] != "CHANGE_ME") {
+            $meta = $app["embedly"]->oembed($request->get("url"));
+        }
+
         $query = $app["db"]->prepare(
             "INSERT INTO links (
                 url,
