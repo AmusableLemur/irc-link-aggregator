@@ -31,13 +31,15 @@ $app["embedly"] = $app->share(function() use($app) {
     ));
 });
 
+$app["password_encoder"] = $app->share(function() {
+    return new MessageDigestPasswordEncoder();
+});
+
 $app["password"] = function() use($app) {
-    $encoder = new MessageDigestPasswordEncoder();
     $password = $app["secret"];
     $password = md5($password.date("Y-m-d"));
-    $password = substr($password, 0, 12);
-
-    return $encoder->encodePassword($password, "");
+    
+    return substr($password, 0, 12);
 };
 
 $app["security.firewalls"] = array(
@@ -49,7 +51,7 @@ $app["security.firewalls"] = array(
         "pattern" => "^/",
         "http" => true,
         "users" => array(
-            "user" => array("ROLE_USER", $app["password"]),
+            "user" => array("ROLE_USER", $app["password_encoder"]->encodePassword($app["password"], "")),
         )
     )
 );
