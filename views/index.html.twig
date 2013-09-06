@@ -16,37 +16,37 @@
             </div>
         </form>
 
-        <table class="table table-bordered table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th class="col-md-1">#</th>
-                    <th>URL</th>
-                    {% if not app.hide_nicks %}
-                        <th class="col-md-2">Nick</th>
-                    {% endif %}
-                    <th class="col-md-2">Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for link in links %}
-                    <tr>
-                        <td>{{ link.id }}</td>
-                        <td>
-                            {% if link.meta.title is defined %}
-                                <a href="{{ link.url }}">{{ link.meta.title }}</a>
-                                <small class="text-muted">({{ link.url }})</small>
-                            {% else %}
-                                <a href="{{ link.url }}">{{ link.url }}</a>
-                            {% endif %}
-                        </td>
-                        {% if not app.hide_nicks %}
-                            <td>{{ link.nick }}</td>
+        {% for link in links %}
+            <div style="margin-bottom:10px">
+                <a href="{{ link.url }}">
+                    {% if link.meta.type is defined %}
+                        {% if link.meta.type == "photo" %}
+                            <i class="icon-camera"></i>
+                        {% elseif link.meta.type == "video" %}
+                            <i class="icon-youtube-play"></i>
+                        {% else %}
+                            <i class="icon-file"></i>
                         {% endif %}
-                        <td>{{ link.time|date("Y-m-d H:i") }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    {% endif %}
+
+                    {% if link.meta.title is defined %}
+                        {{ link.meta.title }}
+                        <small class="text-muted">({{ link.url }})</small>
+                    {% else %}
+                        {{ link.url }}
+                    {% endif %}
+                </a>
+
+                <br>
+                <span class="text-muted" style="font-size:0.9em">
+                    linked {{ link.time|date("Y-m-d H:i") }}
+
+                    {% if not app.hide_nicks %}
+                        by {{ link.nick }}
+                    {% endif %}
+                </span>
+            </div>
+        {% endfor %}
     </div>
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script>
