@@ -17,13 +17,15 @@
         </form>
 
         {% for link in links %}
-            <div style="margin-bottom:10px">
+            <div class="link" style="margin-bottom:10px">
                 <a href="{{ link.url }}">
                     {% if link.meta.type is defined %}
                         {% if link.meta.type == "photo" %}
                             <i class="icon-camera icon-fixed-width"></i>
                         {% elseif link.meta.type == "video" %}
                             <i class="icon-youtube-play icon-fixed-width"></i>
+                        {% elseif link.meta.type == "error" %}
+                            <i class="icon-remove icon-fixed-width"></i>
                         {% else %}
                             <i class="icon-file icon-fixed-width"></i>
                         {% endif %}
@@ -54,7 +56,7 @@
             $(".filter").focus();
         });
 
-        var rows = $("tbody tr");
+        var rows = $(".link");
         $(".filter").keyup(function() {
             var val = $.trim($(this).val()).replace(/ +/g, " ").toLowerCase();
             
