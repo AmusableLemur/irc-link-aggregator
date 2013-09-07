@@ -116,8 +116,16 @@
             });
 
             $.embedly.oembed(url).progress(function(data) {
-                $("#modal .modal-header h3").html(data.title);
-                $("#modal .modal-body").html(data.html);
+                if (data.type == "photo") {
+                    var content = "<img src=\"" + data.url + "\" alt=\"\" style=\"max-width:538px\">";
+
+                    $("#modal .modal-header h3").html("Preview image");
+                    $("#modal .modal-body").html(content);
+                }
+                else {
+                    $("#modal .modal-header h3").html(data.title);
+                    $("#modal .modal-body").html(data.html);
+                }
             });
         });
     </script>
