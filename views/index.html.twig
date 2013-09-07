@@ -86,7 +86,9 @@
         $.embedly.defaults = {
             key: "{{ app.embedly_key }}",
             query: {
+                frame: true,
                 maxwidth: 538,
+                secure: true
             },
             display: $.noop
         };
