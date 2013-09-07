@@ -51,13 +51,46 @@
                     {% if not app.hide_nicks %}
                         by {{ link.nick }}
                     {% endif %}
+
+                    {% if link.meta.type in ["photo", "rich", "video"] %}
+                        <a href="#modal" class="oembed" data-url="{{ link.url }}">
+                            <i class="icon-external-link"></i>
+                        </a>
+                    {% endif %}
                 </span>
             </div>
         {% endfor %}
     </div>
+  
+    <div class="modal fade" id="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Modal title</h3>
+                </div>
+                <div class="modal-body">
+                    {# Dynamically loaded #}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdn.embed.ly/jquery.embedly-3.1.1.min.js"></script>
     <script>
+        $.embedly.defaults = {
+            key: "{{ app.embedly_key }}",
+            query: {
+                maxwidth: 538,
+            },
+            display: $.noop
+        };
+
         $(function() {
             $(".filter").focus();
         });
@@ -70,6 +103,21 @@
                 var text = $(this).text().replace(/\s+/g, " ").toLowerCase();
                 return !~text.indexOf(val);
             }).hide();
+        });
+
+        $(".oembed").on("click", function(e) {
+            e.preventDefault();
+
+            var url = $(this).data("url");
+
+            $("#modal").modal().on("hide", function() {
+                $("#modal .modal-body").html("");
+            });
+
+            $.embedly.oembed(url).progress(function(data) {
+                $("#modal .modal-header h3").html(data.title);
+                $("#modal .modal-body").html(data.html);
+            });
         });
     </script>
 </body>
