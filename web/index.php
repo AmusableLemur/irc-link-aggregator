@@ -71,6 +71,8 @@ $app->get("/", function() use($app) {
 
     array_walk($links, function(&$link) use($app) {
         $link["meta"] = unserialize($link["meta"]);
+        $link["domain"] = parse_url($link["url"], PHP_URL_HOST);
+        $link["domain"] = str_replace("www.", "", $link["domain"]);
     });
 
     return $app["twig"]->render("index.html.twig", array(
