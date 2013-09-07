@@ -111,6 +111,7 @@
             var url = $(this).data("url");
 
             $("#modal").modal().on("hide", function() {
+                $("#modal .modal-header h3").html("Preview link");
                 $("#modal .modal-body").html("");
             });
 
