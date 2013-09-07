@@ -52,7 +52,7 @@
                         by {{ link.nick }}
                     {% endif %}
 
-                    {% if link.meta.type in ["photo", "rich", "video"] %}
+                    {% if link.meta.type is defined and link.meta.type in ["photo", "rich", "video"] %}
                         <a href="#modal" class="oembed" data-url="{{ link.url }}">
                             <i class="icon-external-link"></i>
                         </a>
